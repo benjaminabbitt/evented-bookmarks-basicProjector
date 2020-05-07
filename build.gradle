@@ -50,6 +50,12 @@ dependencies {
     compile group: "org.cfg4j", name: "cfg4j-core", version: "4.4.0"
     compile group: "org.cfg4j", name: "cfg4j-consul", version: "4.4.0"
 
+    //BDD
+    testImplementation 'io.cucumber:cucumber-java8:5.6.0'
+    testImplementation 'io.cucumber:cucumber-junit:5.6.0'
+    testImplementation 'io.cucumber:cucumber-java:5.6.0'
+
+    //Project Into
     compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.12.3'
 
 }
@@ -73,5 +79,22 @@ idea {
     module {
         sourceDirs += file("$projectDir/src/generated/main/java")
         sourceDirs += file("$projectDir/src/generated/main/grpc")
+    }
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+task cucumber() {
+    dependsOn assemble, compileTestJava
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = ['--strict', '--plugin', 'pretty', '--glue', 'hellocucumber', 'src/test/resources']
+        }
     }
 }
