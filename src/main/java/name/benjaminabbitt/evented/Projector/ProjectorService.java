@@ -61,7 +61,7 @@ public class ProjectorService {
         }
     }
 
-    private static class BookmarkService extends ProjectorImplBase {
+    public static class BookmarkService extends ProjectorImplBase {
         private final EventPageDispatcher dispatcher;
 
         public BookmarkService(EventPageDispatcher dispatcher) {

@@ -12,6 +12,8 @@ import name.benjaminabbitt.evented.bookmarks.Bookmarks;
 import name.benjaminabbitt.evented.core.Evented;
 import org.bson.Document;
 
+import static name.benjaminabbitt.evented.java.UUIDAdapters.euuidTouuuid;
+
 public class BookmarkProjector implements EventPageDispatcher {
     private final MongoCollection<Document> collection;
 
@@ -40,13 +42,13 @@ public class BookmarkProjector implements EventPageDispatcher {
                 .append("url", bookmarkCreated.getUrl())
                 .append("deleted", false)
                 .append("sequence", page.getSequenceCase().getNumber())
-                .append("_id", cover.getRoot())
+                .append("_id", euuidTouuuid(cover.getRoot()).toString())
         );
     }
 
     private void handle(Evented.Cover cover, Evented.EventPage page, Bookmarks.BookmarkDeleted bookmarkDeleted) {
         collection.updateOne(
-                Filters.eq("_id", cover.getRoot()),
+                Filters.eq("_id", euuidTouuuid(cover.getRoot()).toString()),
                 Updates.combine(
                         Updates.set("deleted", true),
                         Updates.set("sequence", page.getSequenceCase().getNumber())
